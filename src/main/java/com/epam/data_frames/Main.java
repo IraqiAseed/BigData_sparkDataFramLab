@@ -6,6 +6,7 @@ import org.apache.spark.SparkConf;
 import org.apache.spark.SparkContext;
 import org.apache.spark.sql.*;
 import org.apache.spark.sql.types.DataTypes;
+import org.apache.spark.sql.types.StructField;
 import scala.Tuple2;
 import scala.collection.Seq;
 
@@ -43,14 +44,20 @@ public class Main {
         df.show();
         //print out the schema
         df.printSchema();
-
+        System.out.println("--------------");
         //print out the column type
         Tuple2<String, String>[] types = df.dtypes();
         Arrays.stream(types).collect(Collectors.toList()).forEach(e -> System.out.println(e._1 + "," + e._2) );
 
 
-        //for()
-
+        System.out.println("--------------");
+        StructField[] fields = df.schema().fields();
+        for (StructField field : fields) {
+            System.out.println(field.dataType());
+            System.out.println(field.name());
+            System.out.println(field.nullable());
+        }
+        System.out.println("--------------");
 
         //add column salary the value will be calculated by formula: age *numberOf technologies * 10
         DataFrame DataFrameWithSalary = df.withColumn(SALARY, col(AGE).multiply(size(col(KEYWORDS))).multiply(10));
